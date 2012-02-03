@@ -10,7 +10,7 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-#import "Ville.h"
+#import "Town.h"
 #import "MapPoint.h"
 
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate>
@@ -24,13 +24,14 @@
 @property (strong, nonatomic) id detailItem;
 
 @property (strong, nonatomic) IBOutlet UILabel              *detailDescriptionLabel;
-@property (strong, nonatomic) Ville                         *detailVille;
+@property (strong, nonatomic) Town                          *detailTown;
 @property (nonatomic,retain)  IBOutlet MKMapView            *mapView;
 @property (nonatomic,retain)  IBOutlet UIBarButtonItem      *aroundMe;
-@property (nonatomic,retain)  MapPoint                      *villeAnnotation;
+@property (nonatomic,retain)  MapPoint                      *townAnnotation;
 @property (nonatomic,retain)  IBOutlet UISegmentedControl   *mapType;
 @property (nonatomic,retain)  NSMutableArray                *townArray;
 @property (nonatomic, retain) UIActivityIndicatorView       *activityIndicator;
+@property (nonatomic,retain) IBOutlet UIProgressView        *myProgressBar;
 
 - (IBAction)aroundMe_Clicked:(id)sender;
 - (void)refresh;

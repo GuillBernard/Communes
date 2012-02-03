@@ -7,13 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Ville.h"
+#import "Town.h"
 
 @interface InfosViewController : UIViewController
 
-@property (strong, nonatomic) Ville                     *detailVille;
+@property (strong, nonatomic) Town                      *detailTown;
 @property (strong, nonatomic) IBOutlet UINavigationBar  *navigationBar;
 @property (nonatomic,retain)  IBOutlet UINavigationItem *myNavigationItem;
+@property (nonatomic,retain)  IBOutlet UILabel          *postalCodeLabel;
+@property (nonatomic,retain)  IBOutlet UILabel          *inseeCodeLabel;
+@property (nonatomic,retain)  IBOutlet UILabel          *regionCodeLabel;
 
 - (IBAction)comeBack:(id)sender;
 

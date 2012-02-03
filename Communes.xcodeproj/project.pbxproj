@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C400DA7D14DC7E7900CDEB5C /* Paris.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C400DA7C14DC7E7900CDEB5C /* Paris.gpx */; };
+		C400DA7F14DC7EF500CDEB5C /* ClermontFerrand.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C400DA7E14DC7EF500CDEB5C /* ClermontFerrand.gpx */; };
+		C400DA8314DC8D6600CDEB5C /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = C400DA8214DC8D6600CDEB5C /* Default-Landscape~ipad.png */; };
 		C46BD72514D96B12005D358B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C46BD72414D96B12005D358B /* UIKit.framework */; };
 		C46BD72714D96B12005D358B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C46BD72614D96B12005D358B /* Foundation.framework */; };
 		C46BD72914D96B12005D358B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C46BD72814D96B12005D358B /* CoreGraphics.framework */; };
@@ -19,7 +22,7 @@
 		C46BD74114D96B12005D358B /* MasterViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = C46BD73F14D96B12005D358B /* MasterViewController_iPad.xib */; };
 		C46BD74414D96B12005D358B /* DetailViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = C46BD74214D96B12005D358B /* DetailViewController_iPhone.xib */; };
 		C46BD74714D96B12005D358B /* DetailViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = C46BD74514D96B12005D358B /* DetailViewController_iPad.xib */; };
-		C46BD74F14D96B38005D358B /* Ville.m in Sources */ = {isa = PBXBuildFile; fileRef = C46BD74E14D96B38005D358B /* Ville.m */; };
+		C46BD74F14D96B38005D358B /* Town.m in Sources */ = {isa = PBXBuildFile; fileRef = C46BD74E14D96B38005D358B /* Town.m */; };
 		C481B43414DBF3CA00B6592A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C481B43314DBF3CA00B6592A /* Default.png */; };
 		C481B43614DBF3CC00B6592A /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C481B43514DBF3CC00B6592A /* Default@2x.png */; };
 		C4A1130F14D9C96C00169C70 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A1130E14D9C96C00169C70 /* MapKit.framework */; };
@@ -33,6 +36,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C400DA7C14DC7E7900CDEB5C /* Paris.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Paris.gpx; sourceTree = "<group>"; };
+		C400DA7E14DC7EF500CDEB5C /* ClermontFerrand.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ClermontFerrand.gpx; sourceTree = "<group>"; };
+		C400DA8214DC8D6600CDEB5C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		C46BD72014D96B12005D358B /* Communes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Communes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C46BD72414D96B12005D358B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C46BD72614D96B12005D358B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -51,8 +57,8 @@
 		C46BD74014D96B12005D358B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MasterViewController_iPad.xib; sourceTree = "<group>"; };
 		C46BD74314D96B12005D358B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DetailViewController_iPhone.xib; sourceTree = "<group>"; };
 		C46BD74614D96B12005D358B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DetailViewController_iPad.xib; sourceTree = "<group>"; };
-		C46BD74D14D96B38005D358B /* Ville.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ville.h; sourceTree = "<group>"; };
-		C46BD74E14D96B38005D358B /* Ville.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ville.m; sourceTree = "<group>"; };
+		C46BD74D14D96B38005D358B /* Town.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Town.h; sourceTree = "<group>"; };
+		C46BD74E14D96B38005D358B /* Town.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Town.m; sourceTree = "<group>"; };
 		C481B43314DBF3CA00B6592A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../Default.png; sourceTree = "<group>"; };
 		C481B43514DBF3CC00B6592A /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../Default@2x.png"; sourceTree = "<group>"; };
 		C4A1130E14D9C96C00169C70 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -83,9 +89,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C400DA7B14DC7E6600CDEB5C /* Locations */ = {
+			isa = PBXGroup;
+			children = (
+				C400DA7C14DC7E7900CDEB5C /* Paris.gpx */,
+				C400DA7E14DC7EF500CDEB5C /* ClermontFerrand.gpx */,
+			);
+			name = Locations;
+			sourceTree = "<group>";
+		};
 		C46BD71514D96B12005D358B = {
 			isa = PBXGroup;
 			children = (
+				C400DA8214DC8D6600CDEB5C /* Default-Landscape~ipad.png */,
 				C46BD72A14D96B12005D358B /* Communes */,
 				C46BD72314D96B12005D358B /* Frameworks */,
 				C46BD72114D96B12005D358B /* Products */,
@@ -139,6 +155,7 @@
 		C46BD75014D96B4C005D358B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C400DA7B14DC7E6600CDEB5C /* Locations */,
 				C476C73914D9FD0A009ABBA1 /* Images */,
 				C46BD73C14D96B12005D358B /* MasterViewController_iPhone.xib */,
 				C46BD73F14D96B12005D358B /* MasterViewController_iPad.xib */,
@@ -164,8 +181,8 @@
 		C4FB6E6914DB30160035408B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				C46BD74D14D96B38005D358B /* Ville.h */,
-				C46BD74E14D96B38005D358B /* Ville.m */,
+				C46BD74D14D96B38005D358B /* Town.h */,
+				C46BD74E14D96B38005D358B /* Town.m */,
 				C4A1131314D9CC5300169C70 /* MapPoint.h */,
 				C4A1131414D9CC5300169C70 /* MapPoint.m */,
 			);
@@ -247,6 +264,9 @@
 				C4F00F4A14DB4443000BA8DB /* InfosViewController.xib in Resources */,
 				C481B43414DBF3CA00B6592A /* Default.png in Resources */,
 				C481B43614DBF3CC00B6592A /* Default@2x.png in Resources */,
+				C400DA7D14DC7E7900CDEB5C /* Paris.gpx in Resources */,
+				C400DA7F14DC7EF500CDEB5C /* ClermontFerrand.gpx in Resources */,
+				C400DA8314DC8D6600CDEB5C /* Default-Landscape~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,7 +281,7 @@
 				C46BD73514D96B12005D358B /* AppDelegate.m in Sources */,
 				C46BD73814D96B12005D358B /* MasterViewController.m in Sources */,
 				C46BD73B14D96B12005D358B /* DetailViewController.m in Sources */,
-				C46BD74F14D96B38005D358B /* Ville.m in Sources */,
+				C46BD74F14D96B38005D358B /* Town.m in Sources */,
 				C4A1131514D9CC5300169C70 /* MapPoint.m in Sources */,
 				C4F00F4914DB4443000BA8DB /* InfosViewController.m in Sources */,
 			);

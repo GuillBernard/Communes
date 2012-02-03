@@ -20,13 +20,14 @@
 @synthesize detailItem = _detailItem;
 @synthesize detailDescriptionLabel = _detailDescriptionLabel;
 @synthesize masterPopoverController = _masterPopoverController;
-@synthesize detailVille = _detailVille;
+@synthesize detailTown = _detailTown;
 @synthesize mapView = _mapView;
 @synthesize aroundMe = _aroundMe;
-@synthesize villeAnnotation = _villeAnnotation;
+@synthesize townAnnotation = _townAnnotation;
 @synthesize mapType = _mapType;
 @synthesize townArray = _townArray;
 @synthesize activityIndicator = _activityIndicator;
+@synthesize myProgressBar = _myProgressBar;
 
 float latitude = 46.770204;
 float longitude = 2.431755;
@@ -38,13 +39,14 @@ float delta = 8.;
     [_masterPopoverController release];
     [_detailDescriptionLabel release];
     [_masterPopoverController release];
-    [_detailVille release];
+    [_detailTown release];
     [_mapView release];
     [_aroundMe release];
-    [_villeAnnotation release];
+    [_townAnnotation release];
     [_mapType release];  
     [_townArray release];
     [_activityIndicator release];
+    [_myProgressBar release];
     [clController release];
     [aroundMeTownArray release];
     [super dealloc];
@@ -170,28 +172,28 @@ float delta = 8.;
     isAround = false;
     self.detailDescriptionLabel.text = @"";
     self.detailDescriptionLabel.hidden = true;
-    self.title = [_detailVille name];
+    self.title = [_detailTown name];
     
     [_mapView removeAnnotations:_mapView.annotations];
     
-    CLLocationDegrees CLLat = (CLLocationDegrees)_detailVille.latitude;    
-    CLLocationDegrees CLLong = (CLLocationDegrees)_detailVille.longitude;
+    CLLocationDegrees CLLat = (CLLocationDegrees)_detailTown.latitude;    
+    CLLocationDegrees CLLong = (CLLocationDegrees)_detailTown.longitude;
     
     CLLocationCoordinate2D newCoord = { CLLat, CLLong };
     
     MKCoordinateRegion region = self.mapView.region;
     region.center = newCoord;
-    region.span.longitudeDelta = fabs([_detailVille eloignement]);
-    region.span.latitudeDelta = fabs([_detailVille eloignement]);
+    region.span.longitudeDelta = fabs([_detailTown eloignement]);
+    region.span.latitudeDelta = fabs([_detailTown eloignement]);
     [self.mapView setRegion:region animated:YES]; 
     
     
-     _villeAnnotation = [[MapPoint alloc] initWithCoordinate:newCoord title:[_detailVille name]]; 
+     _townAnnotation = [[MapPoint alloc] initWithCoordinate:newCoord title:[_detailTown name]]; 
     
     
-    [_mapView addAnnotation:_villeAnnotation];
+    [_mapView addAnnotation:_townAnnotation];
     
-    [_mapView selectAnnotation:_villeAnnotation animated:false];
+    [_mapView selectAnnotation:_townAnnotation animated:false];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         [_masterPopoverController dismissPopoverAnimated:YES];
@@ -204,7 +206,7 @@ float delta = 8.;
     {
         return nil;
     }
-    if(_villeAnnotation != nil || isAround)
+    if(_townAnnotation != nil || isAround)
     {
         MKPinAnnotationView *pin = (MKPinAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:@"AnnotationIdentifier"];
         if (pin == nil) {
@@ -223,34 +225,33 @@ float delta = 8.;
     return nil;
 }
 
--(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
-	
+-(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{    
 	if(!isAround)
     {
         InfosViewController *infosController = [[InfosViewController alloc] init];
-		infosController.detailVille=_detailVille;
+		infosController.detailTown=_detailTown;
 		infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
 		[self presentModalViewController:infosController animated:YES];
     }
     else
     {
-        Ville *choosen = [[Ville alloc] init];
+        Town *choosen = [[Town alloc] init];
         MapPoint *annotation = view.annotation;
 		//to know which annotation I choose
 		for (int i = 0 ; i < [aroundMeTownArray count] ; i++) {
-			Ville *v = [aroundMeTownArray objectAtIndex:i];
-            CLLocationDegrees CLLat = (CLLocationDegrees)[v latitude];    
-            CLLocationDegrees CLLong = (CLLocationDegrees)[v longitude];
+			Town *town = [aroundMeTownArray objectAtIndex:i];
+            CLLocationDegrees CLLat = (CLLocationDegrees)[town latitude];    
+            CLLocationDegrees CLLong = (CLLocationDegrees)[town longitude];
             
 			if (annotation.coordinate.latitude==CLLat && annotation.coordinate.longitude==CLLong) {
-				choosen=v;
+				choosen=town;
                 break;
 			}
             
-            [v release];
+            [town release];
 		}
         InfosViewController *infosController = [[InfosViewController alloc] init];
-		infosController.detailVille=choosen;
+		infosController.detailTown=choosen;
 		infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
 		[self presentModalViewController:infosController animated:YES];
         [choosen release];
@@ -308,42 +309,41 @@ float delta = 8.;
         _mapView.showsUserLocation = YES;
         MKCoordinateRegion region = self.mapView.region;
         region.center = newLocation.coordinate;
-        region.span.longitudeDelta = 0.09;
-        region.span.latitudeDelta = 0.09;
+        region.span.longitudeDelta = 0.153426;
+        region.span.latitudeDelta = 0.129721;
         [self.mapView setRegion:region animated:YES];
         
-        NSLog(@"search");
         //search the locations around me
         for (int i = 0; i < [_townArray count]; i++) {
-            Ville *v = [_townArray objectAtIndex:i];
+            Town *town = [_townArray objectAtIndex:i];
         
-            CLLocationDegrees CLLat = (CLLocationDegrees)v.latitude;    
-            CLLocationDegrees CLLong = (CLLocationDegrees)v.longitude;
+            CLLocationDegrees CLLat = (CLLocationDegrees)town.latitude;    
+            CLLocationDegrees CLLong = (CLLocationDegrees)town.longitude;
             
-            CLLocation * villeLocation = [[CLLocation alloc] initWithLatitude:CLLat longitude:CLLong];
+            CLLocation * townLocation = [[CLLocation alloc] initWithLatitude:CLLat longitude:CLLong];
 
-            CLLocationDistance dist = [newLocation distanceFromLocation:villeLocation];
+            CLLocationDistance dist = [newLocation distanceFromLocation:townLocation];
             
             if (dist < 10000.) {
-                [aroundMeTownArray addObject:v];
+                [aroundMeTownArray addObject:town];
             }
 
-            [villeLocation release];
-            [v release];
+            [townLocation release];
+            [town release];
         }
     
         //add the pins
         self.detailDescriptionLabel.text = @"";
         self.detailDescriptionLabel.hidden = true;
         for (int i = 0; i < [aroundMeTownArray count]; i++) {
-            _detailVille = [aroundMeTownArray objectAtIndex:i];
+            _detailTown = [aroundMeTownArray objectAtIndex:i];
             
-            CLLocationDegrees CLLat = _detailVille.latitude;    
-            CLLocationDegrees CLLong = _detailVille.longitude;
+            CLLocationDegrees CLLat = _detailTown.latitude;    
+            CLLocationDegrees CLLong = _detailTown.longitude;
         
             CLLocationCoordinate2D newCoord = { CLLat, CLLong };
             
-            MapPoint *point = [[MapPoint alloc] initWithCoordinate:newCoord title:[_detailVille name]]; 
+            MapPoint *point = [[MapPoint alloc] initWithCoordinate:newCoord title:[_detailTown name]]; 
         
         
             [_mapView addAnnotation:point];

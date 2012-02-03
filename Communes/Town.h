@@ -1,5 +1,5 @@
 //
-//  Ville.h
+//  Town.h
 //  Communes
 //
 //  Created by Guillaume Bernard on 01/02/12.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Ville : NSObject
+@interface Town : NSObject
 {
     NSString *printVille;
 }

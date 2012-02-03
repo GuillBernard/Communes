@@ -1,14 +1,14 @@
 //
-//  Ville.m
+//  Town.m
 //  Communes
 //
 //  Created by Guillaume Bernard on 01/02/12.
 //  Copyright (c) 2012 Bazinga. All rights reserved.
 //
 
-#import "Ville.h"
+#import "Town.h"
 
-@implementation Ville
+@implementation Town
 
 @synthesize name = _name;
 @synthesize nameUP = _nameUP;

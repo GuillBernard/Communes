@@ -10,9 +10,12 @@
 
 @implementation InfosViewController
 
-@synthesize detailVille = _detailVille;
+@synthesize detailTown = _detailTown;
 @synthesize navigationBar = _navigationBar;
 @synthesize myNavigationItem = _myNavigationItem;
+@synthesize postalCodeLabel = _postalCodeLabel;
+@synthesize inseeCodeLabel = _inseeCodeLabel;
+@synthesize regionCodeLabel = _regionCodeLabel;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,7 +36,7 @@
 
 - (void) dealloc
 {
-    [_detailVille release];
+    [_detailTown release];
     [_navigationBar release];
     [_myNavigationItem release];
     [super dealloc];
@@ -46,8 +49,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-	_myNavigationItem.title = _detailVille.name;
-    
+	_myNavigationItem.title = _detailTown.name;
+    _postalCodeLabel.text = _detailTown.postalCode;
+    _inseeCodeLabel.text = _detailTown.inseeCode;
+    _regionCodeLabel.text = _detailTown.regionCode;
 }
 
 - (void)viewDidUnload
