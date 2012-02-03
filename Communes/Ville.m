@@ -1,0 +1,37 @@
+//
+//  Ville.m
+//  Communes
+//
+//  Created by Guillaume Bernard on 01/02/12.
+//  Copyright (c) 2012 Bazinga. All rights reserved.
+//
+
+#import "Ville.h"
+
+@implementation Ville
+
+@synthesize name = _name;
+@synthesize nameUP = _nameUP;
+@synthesize postalCode = _postalCode;
+@synthesize inseeCode = _inseeCode;
+@synthesize regionCode = _regionCode;
+@synthesize eloignement = _eloignement;
+@synthesize latitude = _latitude;
+@synthesize longitude = _longitude;
+
+-(NSString *) print{
+    printVille = [[NSString alloc] initWithFormat:@"%@\n\ncode postal : %@\n", _name, _postalCode];
+    
+    return printVille;
+}
+
+-(void)dealloc{
+    [printVille release];
+    [_name release];
+    [_nameUP release];
+    [_postalCode release];
+    [_inseeCode release];
+    [_regionCode release];
+}
+
+@end

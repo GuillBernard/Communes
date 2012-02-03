@@ -7,11 +7,33 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
 
-@interface DetailViewController : UIViewController <UISplitViewControllerDelegate>
+#import "Ville.h"
+#import "MapPoint.h"
+
+@interface DetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate>
+{
+    bool                 isAround;
+    CLLocationManager   *clController;
+    NSMutableArray      *aroundMeTownArray;
+    bool                 first;
+}
 
 @property (strong, nonatomic) id detailItem;
 
-@property (strong, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
+@property (strong, nonatomic) IBOutlet UILabel              *detailDescriptionLabel;
+@property (strong, nonatomic) Ville                         *detailVille;
+@property (nonatomic,retain)  IBOutlet MKMapView            *mapView;
+@property (nonatomic,retain)  IBOutlet UIBarButtonItem      *aroundMe;
+@property (nonatomic,retain)  MapPoint                      *villeAnnotation;
+@property (nonatomic,retain)  IBOutlet UISegmentedControl   *mapType;
+@property (nonatomic,retain)  NSMutableArray                *townArray;
+@property (nonatomic, retain) UIActivityIndicatorView       *activityIndicator;
+
+- (IBAction)aroundMe_Clicked:(id)sender;
+- (void)refresh;
+- (IBAction)changeMapType:(id)sender;
 
 @end
