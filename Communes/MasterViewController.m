@@ -157,20 +157,23 @@
     _detailViewController.myProgressBar.hidden = YES;
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    self.detailViewController.detailDescriptionLabel.text = @"Selectionner une commune";
-
+    self.detailViewController.detailDescriptionLabel.text = @"";
+    self.detailViewController.detailDescriptionLabel.hidden = true;
     
     inConnection = nil;
     
     NSArray *array = [response componentsSeparatedByString: @"\n"];
     for (int i = 1; i < array.count; i++) {   
         NSArray *tempTownArray = [[array objectAtIndex:i] componentsSeparatedByString: @";"];
-        Town *town = [[Town alloc] init];
         if ([[tempTownArray objectAtIndex:0] isEqualToString:@""]) {
+            tempTownArray = nil;
+            [tempTownArray release];
             continue;
         }
         
-        if (tempTownArray.count == 8 ) {            
+        if (tempTownArray.count == 8 ) {
+            Town *town = [[Town alloc] init];
+            
             town.name = [tempTownArray objectAtIndex:0];
             town.nameUP = [tempTownArray objectAtIndex:1];
             town.postalCode = [tempTownArray objectAtIndex:2];
@@ -181,23 +184,26 @@
                                                                                      withString:@"."] floatValue];
             town.longitude = [[[tempTownArray objectAtIndex:6] stringByReplacingOccurrencesOfString:@","
                                                                                       withString:@"."] floatValue];
-            town.eloignement = [[[tempTownArray objectAtIndex:7] stringByReplacingOccurrencesOfString:@","
+            town.distance = [[[tempTownArray objectAtIndex:7] stringByReplacingOccurrencesOfString:@","
                                                                                         withString:@"."] floatValue];
+            
+            [townArray addObject:town];
+            town = nil;
+            [town release];
         }
         else
         {
             tempTownArray = nil;
-            town = nil;
-            continue;
+            [tempTownArray release];
         }
-        [townArray addObject:town];
-        self.detailViewController.townArray = townArray;
         tempTownArray = nil;
-        town = nil;
+        [tempTownArray release];
     }
     
+    self.detailViewController.townArray = townArray;
     [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     array = nil;
+    [array release];
 }
 
 #pragma mark - Around Me
@@ -337,7 +343,7 @@
         if ([townArray count] == 0) {
             text = @"Chargement...";
         }
-        else
+        else if(townArray.count >=  indexPath.row+1)
         {
             text = [[NSString alloc] initWithFormat:@"%@", [[townArray objectAtIndex:indexPath.row+1] name]];
         }

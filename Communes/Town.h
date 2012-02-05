@@ -20,7 +20,7 @@
 @property (strong, nonatomic) NSString *regionCode;
 @property float latitude;
 @property float longitude;
-@property float eloignement;
+@property float distance;
 
 -(NSString *) print;
 

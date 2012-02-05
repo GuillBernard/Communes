@@ -38,7 +38,7 @@
 /* Begin PBXFileReference section */
 		C400DA7C14DC7E7900CDEB5C /* Paris.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Paris.gpx; sourceTree = "<group>"; };
 		C400DA7E14DC7EF500CDEB5C /* ClermontFerrand.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ClermontFerrand.gpx; sourceTree = "<group>"; };
-		C400DA8214DC8D6600CDEB5C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		C400DA8214DC8D6600CDEB5C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Landscape~ipad.png"; path = "../Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		C46BD72014D96B12005D358B /* Communes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Communes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C46BD72414D96B12005D358B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C46BD72614D96B12005D358B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -101,7 +101,6 @@
 		C46BD71514D96B12005D358B = {
 			isa = PBXGroup;
 			children = (
-				C400DA8214DC8D6600CDEB5C /* Default-Landscape~ipad.png */,
 				C46BD72A14D96B12005D358B /* Communes */,
 				C46BD72314D96B12005D358B /* Frameworks */,
 				C46BD72114D96B12005D358B /* Products */,
@@ -169,6 +168,7 @@
 		C476C73914D9FD0A009ABBA1 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				C400DA8214DC8D6600CDEB5C /* Default-Landscape~ipad.png */,
 				C481B43514DBF3CC00B6592A /* Default@2x.png */,
 				C481B43314DBF3CA00B6592A /* Default.png */,
 				C4A1131A14D9FC6200169C70 /* Icon-72.png */,

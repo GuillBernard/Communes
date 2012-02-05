@@ -23,7 +23,6 @@
 @synthesize detailTown = _detailTown;
 @synthesize mapView = _mapView;
 @synthesize aroundMe = _aroundMe;
-@synthesize townAnnotation = _townAnnotation;
 @synthesize mapType = _mapType;
 @synthesize townArray = _townArray;
 @synthesize activityIndicator = _activityIndicator;
@@ -42,7 +41,6 @@ float delta = 8.;
     [_detailTown release];
     [_mapView release];
     [_aroundMe release];
-    [_townAnnotation release];
     [_mapType release];  
     [_townArray release];
     [_activityIndicator release];
@@ -183,17 +181,19 @@ float delta = 8.;
     
     MKCoordinateRegion region = self.mapView.region;
     region.center = newCoord;
-    region.span.longitudeDelta = fabs([_detailTown eloignement]);
-    region.span.latitudeDelta = fabs([_detailTown eloignement]);
+    region.span.longitudeDelta = fabs([_detailTown distance]);
+    region.span.latitudeDelta = fabs([_detailTown distance]);
     [self.mapView setRegion:region animated:YES]; 
     
     
-     _townAnnotation = [[MapPoint alloc] initWithCoordinate:newCoord title:[_detailTown name]]; 
+     MapPoint *townAnnotation = [[MapPoint alloc] initWithCoordinate:newCoord title:[_detailTown name]]; 
     
     
-    [_mapView addAnnotation:_townAnnotation];
+    [_mapView addAnnotation:townAnnotation];
     
-    [_mapView selectAnnotation:_townAnnotation animated:false];
+    [_mapView selectAnnotation:townAnnotation animated:false];
+    
+    [townAnnotation release];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         [_masterPopoverController dismissPopoverAnimated:YES];
@@ -206,23 +206,18 @@ float delta = 8.;
     {
         return nil;
     }
-    if(_townAnnotation != nil || isAround)
-    {
-        MKPinAnnotationView *pin = (MKPinAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:@"AnnotationIdentifier"];
-        if (pin == nil) {
-            pin = [[[MKPinAnnotationView alloc] initWithAnnotation:annotation_ reuseIdentifier: @"AnnotationIdentifier"] autorelease];
-        }
-        else {
-            pin.annotation = annotation_;
-        }
-        [pin setCanShowCallout:YES];
-        UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        pin.rightCalloutAccessoryView = rightButton;
-        pin.animatesDrop = YES;
-        return pin;
+    MKPinAnnotationView *pin = (MKPinAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:@"AnnotationIdentifier"];
+    if (pin == nil) {
+        pin = [[[MKPinAnnotationView alloc] initWithAnnotation:annotation_ reuseIdentifier: @"AnnotationIdentifier"] autorelease];
     }
-        
-    return nil;
+    else {
+        pin.annotation = annotation_;
+    }
+    [pin setCanShowCallout:YES];
+    UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    pin.rightCalloutAccessoryView = rightButton;
+    pin.animatesDrop = YES;
+    return pin;
 }
 
 -(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{    
@@ -255,6 +250,7 @@ float delta = 8.;
 		infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
 		[self presentModalViewController:infosController animated:YES];
         [choosen release];
+        [annotation release];
     }
 	
 }
@@ -309,8 +305,8 @@ float delta = 8.;
         _mapView.showsUserLocation = YES;
         MKCoordinateRegion region = self.mapView.region;
         region.center = newLocation.coordinate;
-        region.span.longitudeDelta = 0.153426;
-        region.span.latitudeDelta = 0.129721;
+        region.span.longitudeDelta = 0.163426;
+        region.span.latitudeDelta = 0.139721;
         [self.mapView setRegion:region animated:YES];
         
         //search the locations around me

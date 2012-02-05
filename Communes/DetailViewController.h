@@ -27,7 +27,6 @@
 @property (strong, nonatomic) Town                          *detailTown;
 @property (nonatomic,retain)  IBOutlet MKMapView            *mapView;
 @property (nonatomic,retain)  IBOutlet UIBarButtonItem      *aroundMe;
-@property (nonatomic,retain)  MapPoint                      *townAnnotation;
 @property (nonatomic,retain)  IBOutlet UISegmentedControl   *mapType;
 @property (nonatomic,retain)  NSMutableArray                *townArray;
 @property (nonatomic, retain) UIActivityIndicatorView       *activityIndicator;

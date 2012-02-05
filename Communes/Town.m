@@ -15,7 +15,7 @@
 @synthesize postalCode = _postalCode;
 @synthesize inseeCode = _inseeCode;
 @synthesize regionCode = _regionCode;
-@synthesize eloignement = _eloignement;
+@synthesize distance = _distance;
 @synthesize latitude = _latitude;
 @synthesize longitude = _longitude;
 
