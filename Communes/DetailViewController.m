@@ -224,7 +224,7 @@ calloutAccessoryControlTapped:(UIControl *)control {
       CLLocationDegrees CLLat = (CLLocationDegrees)[town latitude];    
       CLLocationDegrees CLLong = (CLLocationDegrees)[town longitude];
       
-			if (annotation.coordinate_.latitude==CLLat && annotation.coordinate_.longitude==CLLong) {
+			if (annotation.coordinate.latitude==CLLat && annotation.coordinate.longitude==CLLong) {
 				choosen=town;
         break;
 			}
