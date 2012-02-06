@@ -14,12 +14,11 @@
 @synthesize subtitle = _subtitle;
 @synthesize coordinate = _coordinate;
 
--(id) initWithCoordinate:(CLLocationCoordinate2D) c title:(NSString *) t
-{
-    _title = t;
-    _coordinate = c;
-    
-    return self;
+-(id) initWithCoordinate:(CLLocationCoordinate2D) c title:(NSString *) t {
+  _title = t;
+  _coordinate = c;
+  
+  return self;
 }
 
 @end

@@ -13,12 +13,11 @@
 #import "Town.h"
 #import "MapPoint.h"
 
-@interface DetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate>
-{
-    bool                 isAround;
-    CLLocationManager   *clController;
-    NSMutableArray      *aroundMeTownArray;
-    bool                 first;
+@interface DetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate> {
+  bool                isAround;
+  CLLocationManager   *clController;
+  NSMutableArray      *aroundMeTownArray;
+  bool                first;
 }
 
 @property (strong, nonatomic) id detailItem;

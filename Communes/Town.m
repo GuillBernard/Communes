@@ -19,19 +19,19 @@
 @synthesize latitude = _latitude;
 @synthesize longitude = _longitude;
 
--(NSString *) print{
-    printVille = [[NSString alloc] initWithFormat:@"%@\n\ncode postal : %@\n", _name, _postalCode];
-    
-    return printVille;
+- (NSString *) print {
+  printVille = [[NSString alloc] initWithFormat:@"%@\n\ncode postal : %@\n", _name, _postalCode];
+  
+  return printVille;
 }
 
--(void)dealloc{
-    [printVille release];
-    [_name release];
-    [_nameUP release];
-    [_postalCode release];
-    [_inseeCode release];
-    [_regionCode release];
+- (void)dealloc {
+  [printVille release];
+  [_name release];
+  [_nameUP release];
+  [_postalCode release];
+  [_inseeCode release];
+  [_regionCode release];
 }
 
 @end

@@ -10,17 +10,16 @@
 
 @class DetailViewController;
 
-@interface MasterViewController : UITableViewController
-{
-    NSMutableString         *response;
-    NSURLConnection         *connection;
-    NSMutableArray          *townArray;
-    NSMutableArray          *copyListOfTown;
-    IBOutlet UISearchBar    *searchBar;
-    BOOL                     searching;
-    BOOL                     letUserSelectRow;
-    long                     totalFileSize;
-    float                    receivedDataBytes;
+@interface MasterViewController : UITableViewController {
+  NSMutableString         *response;
+  NSURLConnection         *connection;
+  NSMutableArray          *townArray;
+  NSMutableArray          *copyListOfTown;
+  IBOutlet UISearchBar    *searchBar;
+  BOOL                     searching;
+  BOOL                     letUserSelectRow;
+  long                     totalFileSize;
+  float                    receivedDataBytes;
 }
 
 - (void) searchTableView;
