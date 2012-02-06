@@ -8,9 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Town : NSObject
-{
-    NSString *printVille;
+@interface Town : NSObject {
+  NSString *printVille_;
 }
 
 @property (strong, nonatomic) NSString *name;
@@ -22,6 +21,6 @@
 @property float longitude;
 @property float distance;
 
--(NSString *) print;
+- (NSString *)print;
 
 @end
