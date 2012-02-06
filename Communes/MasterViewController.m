@@ -11,13 +11,13 @@
 
 #import "Town.h"
 
-#define URL_CSV @"http://opium.openium.fr/ios/tp4/ville-orig.csv"
+#define kUrlCsv @"http://opium.openium.fr/ios/tp4/ville-orig.csv"
 
 @implementation MasterViewController
 
 @synthesize detailViewController = _detailViewController;
-@synthesize aroundMe = _aroundMe;
-@synthesize myProgressBar = _myProgressBar;
+@synthesize aroundMe             = _aroundMe;
+@synthesize myProgressBar        = _myProgressBar;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -31,21 +31,19 @@
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [_detailViewController release];
   [_myProgressBar release];
   [_aroundMe release];
-  [response release];
-  [townArray release];
-  [copyListOfTown release];
-  [searchBar release];
-  [connection release];
+  [response_ release];
+  [towns_ release];
+  [copyListOfTown_ release];
+  [searchBar_ release];
+  [connection_ release];
   [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
   [super didReceiveMemoryWarning];
   // Release any cached data, images, etc that aren't in use.
 }
@@ -67,14 +65,14 @@
   _detailViewController.myProgressBar.progress = 0;
   
   //the searchBar
-  self.tableView.tableHeaderView = searchBar;
-  searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
-  searching = NO;
-  letUserSelectRow = YES;
-  copyListOfTown = [[NSMutableArray alloc] init];
+  self.tableView.tableHeaderView = searchBar_;
+  searchBar_.autocorrectionType = UITextAutocorrectionTypeNo;
+  searching_ = NO;
+  letUserSelectRow_ = YES;
+  copyListOfTown_ = [[NSMutableArray alloc] init];
   
-  response = [[NSMutableString alloc] init];
-  townArray = [[NSMutableArray alloc] init];
+  response_ = [[NSMutableString alloc] init];
+  towns_ = [[NSMutableArray alloc] init];
   
   if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
     //the Geolocation button
@@ -84,10 +82,10 @@
   }
   
   //the connection
-  NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URL_CSV] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:86400.0];
-  connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+  NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:kUrlCsv] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:86400.0];
+  connection_ = [[NSURLConnection alloc] initWithRequest:request delegate:self];
   
-  if (connection) {
+  if (connection_) {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     self.detailViewController.detailDescriptionLabel.text = @"Chargement..";
     [self.detailViewController refresh];
@@ -123,19 +121,19 @@
 
 #pragma mark - Asynchronous connection
 -(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)inResponse {
-  totalFileSize = inResponse.expectedContentLength;
+  totalFileSize_ = inResponse.expectedContentLength;
 }
 
 - (void)connection: (NSURLConnection *) connection didReceiveData:(NSData *)data {
   //get the response from data
   if(data != nil) {
-    receivedDataBytes += [data length];
-    _myProgressBar.progress = receivedDataBytes / (float)totalFileSize;
-    _detailViewController.myProgressBar.progress = receivedDataBytes / (float)totalFileSize;
+    receivedDataBytes_ += [data length];
+    _myProgressBar.progress = receivedDataBytes_ / (float)totalFileSize_;
+    _detailViewController.myProgressBar.progress = receivedDataBytes_ / (float)totalFileSize_;
     
     NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (text != nil) {
-      [response appendString:text];
+      [response_ appendString:text];
       [text release];
     }
   }
@@ -151,7 +149,7 @@
   
   inConnection = nil;
   
-  NSArray *array = [response componentsSeparatedByString: @"\n"];
+  NSArray *array = [response_ componentsSeparatedByString: @"\n"];
   for (int i = 1; i < array.count; i++) {   
     NSArray *tempTownArray = [[array objectAtIndex:i] componentsSeparatedByString: @";"];
     if ([[tempTownArray objectAtIndex:0] isEqualToString:@""]) {
@@ -176,7 +174,7 @@
       town.distance = [[[tempTownArray objectAtIndex:7] stringByReplacingOccurrencesOfString:@","
                                                                                   withString:@"."] floatValue];
       
-      [townArray addObject:town];
+      [towns_ addObject:town];
       town = nil;
       [town release];
     } else {
@@ -188,8 +186,10 @@
     [tempTownArray release];
   }
   
-  self.detailViewController.townArray = townArray;
-  [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+  self.detailViewController.townArray = towns_;
+  [self.tableView performSelectorOnMainThread:@selector(reloadData)
+                                   withObject:nil
+                                waitUntilDone:NO];
   array = nil;
   [array release];
 }
@@ -202,13 +202,13 @@
 
 #pragma mark - Search Bar
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)theSearchBar {
-  searching = YES;
-  letUserSelectRow = NO;
+  searching_ = YES;
+  letUserSelectRow_ = NO;
   self.tableView.scrollEnabled = NO;
 }
 
 - (NSIndexPath *)tableView :(UITableView *)theTableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-  if(letUserSelectRow) {
+  if(letUserSelectRow_) {
     return indexPath;
   } else {
     return nil;
@@ -217,16 +217,16 @@
 
 - (void)searchBar:(UISearchBar *)theSearchBar textDidChange:(NSString *)searchText {
   //Remove all objects first.
-  [copyListOfTown removeAllObjects];
+  [copyListOfTown_ removeAllObjects];
   
   if([searchText length] > 0) {
-    searching = YES;
-    letUserSelectRow = YES;
+    searching_ = YES;
+    letUserSelectRow_ = YES;
     self.tableView.scrollEnabled = YES;
     [self searchTableView];
   } else {
-    searching = NO;
-    letUserSelectRow = NO;
+    searching_ = NO;
+    letUserSelectRow_ = NO;
     self.tableView.scrollEnabled = NO;
   }
   
@@ -234,11 +234,11 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)thesearchBar {
-  searchBar.text = @"";
-  [searchBar resignFirstResponder];
+  searchBar_.text = @"";
+  [searchBar_ resignFirstResponder];
   
-  letUserSelectRow = YES;
-  searching = NO;
+  letUserSelectRow_ = YES;
+  searching_ = NO;
   self.navigationItem.rightBarButtonItem = nil;
   self.tableView.scrollEnabled = YES;
   
@@ -250,16 +250,16 @@
 }
 
 - (void) searchTableView {
-  NSString *searchText = searchBar.text;
+  NSString *searchText = searchBar_.text;
   NSMutableArray *searchArray = [[NSMutableArray alloc] init];
   
-  [searchArray addObjectsFromArray:townArray];
+  [searchArray addObjectsFromArray:towns_];
   
   for (Town *sTemp in searchArray) {
     NSRange titleResultsRange = [[sTemp name] rangeOfString:searchText options:NSCaseInsensitiveSearch];
     
     if (titleResultsRange.length > 0) {
-      [copyListOfTown addObject:sTemp];
+      [copyListOfTown_ addObject:sTemp];
     }
   }
   
@@ -282,11 +282,11 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  if (searching) {
-    return [copyListOfTown count];
+  if (searching_) {
+    return [copyListOfTown_ count];
   } else {
-    if ([townArray count] > 0) {
-      return [townArray count] -1;
+    if ([towns_ count] > 0) {
+      return [towns_ count] -1;
     } else {
       return 1;
     }
@@ -294,7 +294,8 @@
 }
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   static NSString *CellIdentifier = @"Cell";
   
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -307,13 +308,13 @@
   
   NSString *text;
   
-  if(searching && [copyListOfTown count] != 0) {
-    text = [[NSString alloc] initWithFormat:@"%@", [[copyListOfTown objectAtIndex:indexPath.row] name]];
+  if(searching_ && [copyListOfTown_ count] != 0) {
+    text = [[NSString alloc] initWithFormat:@"%@", [[copyListOfTown_ objectAtIndex:indexPath.row] name]];
   } else {
-    if ([townArray count] == 0) {
+    if ([towns_ count] == 0) {
       text = @"Chargement...";
-    } else if(townArray.count >=  indexPath.row+1) {
-      text = [[NSString alloc] initWithFormat:@"%@", [[townArray objectAtIndex:indexPath.row+1] name]];
+    } else if(towns_.count >=  indexPath.row+1) {
+      text = [[NSString alloc] initWithFormat:@"%@", [[towns_ objectAtIndex:indexPath.row+1] name]];
     }
   }
   
@@ -325,18 +326,18 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-  if(!searching) {
+  if(!searching_) {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
       if (!self.detailViewController) {
         self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
       }
-      self.detailViewController.detailTown = [townArray objectAtIndex:indexPath.row+1];
-      self.detailViewController.townArray = townArray;
+      self.detailViewController.detailTown = [towns_ objectAtIndex:indexPath.row+1];
+      self.detailViewController.townArray = towns_;
       [self.navigationController pushViewController:self.detailViewController animated:YES];
       [self.detailViewController refresh];
     } else {
-      self.detailViewController.detailTown = [townArray objectAtIndex:indexPath.row+1];
-      self.detailViewController.townArray = townArray;
+      self.detailViewController.detailTown = [towns_ objectAtIndex:indexPath.row+1];
+      self.detailViewController.townArray = towns_;
       [self.detailViewController refresh];
     }
   } else {
@@ -344,13 +345,13 @@
       if (!self.detailViewController) {
         self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
       }
-      self.detailViewController.detailTown = [copyListOfTown objectAtIndex:indexPath.row];
-      self.detailViewController.townArray = townArray;
+      self.detailViewController.detailTown = [copyListOfTown_ objectAtIndex:indexPath.row];
+      self.detailViewController.townArray = towns_;
       [self.navigationController pushViewController:self.detailViewController animated:YES];
       [self.detailViewController refresh];
     } else {
-      self.detailViewController.detailTown = [copyListOfTown objectAtIndex:indexPath.row];
-      self.detailViewController.townArray = townArray;
+      self.detailViewController.detailTown = [copyListOfTown_ objectAtIndex:indexPath.row];
+      self.detailViewController.townArray = towns_;
       [self.detailViewController refresh];
     }
   }

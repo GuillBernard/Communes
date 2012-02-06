@@ -18,16 +18,16 @@
 
 @implementation DetailViewController
 
-@synthesize detailItem = _detailItem;
-@synthesize detailDescriptionLabel = _detailDescriptionLabel;
+@synthesize detailItem              = _detailItem;
+@synthesize detailDescriptionLabel  = _detailDescriptionLabel;
 @synthesize masterPopoverController = _masterPopoverController;
-@synthesize detailTown = _detailTown;
-@synthesize mapView = _mapView;
-@synthesize aroundMe = _aroundMe;
-@synthesize mapType = _mapType;
-@synthesize townArray = _townArray;
-@synthesize activityIndicator = _activityIndicator;
-@synthesize myProgressBar = _myProgressBar;
+@synthesize detailTown              = _detailTown;
+@synthesize mapView                 = _mapView;
+@synthesize aroundMe                = _aroundMe;
+@synthesize mapType                 = _mapType;
+@synthesize townArray               = _townArray;
+@synthesize activityIndicator       = _activityIndicator;
+@synthesize myProgressBar           = _myProgressBar;
 
 float latitude = 46.770204;
 float longitude = 2.431755;
@@ -45,8 +45,8 @@ float delta = 8.;
   [_townArray release];
   [_activityIndicator release];
   [_myProgressBar release];
-  [clController release];
-  [aroundMeTownArray release];
+  [clController_ release];
+  [aroundMeTownArray_ release];
   [super dealloc];
 }
 
@@ -85,7 +85,7 @@ float delta = 8.;
 	// Do any additional setup after loading the view, typically from a nib.
   [self configureView];
   
-  isAround = false;
+  isAround_ = false;
   
   //set the map center on the France
   CLLocationDegrees CLLat = (CLLocationDegrees)latitude;    
@@ -157,7 +157,7 @@ float delta = 8.;
 #pragma mark - Set the informations
 
 - (void)refresh {
-  isAround = false;
+  isAround_ = false;
   self.detailDescriptionLabel.text = @"";
   self.detailDescriptionLabel.hidden = true;
   self.title = [_detailTown name];
@@ -207,8 +207,10 @@ float delta = 8.;
   return pin;
 }
 
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {    
-	if(!isAround) {
+- (void)mapView:(MKMapView *)mapView 
+ annotationView:(MKAnnotationView *)view
+calloutAccessoryControlTapped:(UIControl *)control {    
+	if(!isAround_) {
     InfosViewController *infosController = [[InfosViewController alloc] init];
 		infosController.detailTown=_detailTown;
 		infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
@@ -217,12 +219,12 @@ float delta = 8.;
     Town *choosen = [[Town alloc] init];
     MapPoint *annotation = view.annotation;
 		//to know which annotation I choose
-		for (int i = 0 ; i < [aroundMeTownArray count] ; i++) {
-			Town *town = [aroundMeTownArray objectAtIndex:i];
+		for (int i = 0 ; i < [aroundMeTownArray_ count] ; i++) {
+			Town *town = [aroundMeTownArray_ objectAtIndex:i];
       CLLocationDegrees CLLat = (CLLocationDegrees)[town latitude];    
       CLLocationDegrees CLLong = (CLLocationDegrees)[town longitude];
       
-			if (annotation.coordinate.latitude==CLLat && annotation.coordinate.longitude==CLLong) {
+			if (annotation.coordinate_.latitude==CLLat && annotation.coordinate_.longitude==CLLong) {
 				choosen=town;
         break;
 			}
@@ -251,10 +253,10 @@ float delta = 8.;
 
 #pragma mark - Around Me
 - (IBAction) aroundMe_Clicked:(id)sender {
-  isAround = true;
-  first = true;
+  isAround_ = true;
+  first_ = true;
   
-  aroundMeTownArray = [[NSMutableArray alloc] init];
+  aroundMeTownArray_ = [[NSMutableArray alloc] init];
   [_mapView removeAnnotations:_mapView.annotations];
   
   _detailDescriptionLabel.text = @"Around Me - Searching...";
@@ -271,16 +273,19 @@ float delta = 8.;
   [_activityIndicator startAnimating];
   
   //Get the Geolocation
-  clController = [[CLLocationManager alloc] init];
-	clController.delegate = self;
-	[clController startUpdatingLocation];
+  clController_ = [[CLLocationManager alloc] init];
+	clController_.delegate = self;
+	[clController_ startUpdatingLocation];
 }
 
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {    
-  [clController stopUpdatingLocation];
-  if(first) {
-    first = false;
+- (void)locationManager:(CLLocationManager *)manager 
+    didUpdateToLocation:(CLLocation *)newLocation 
+           fromLocation:(CLLocation *)oldLocation {    
+  [clController_ stopUpdatingLocation];
+  
+  if(first_) {
+    first_ = false;
     
     _mapView.showsUserLocation = YES;
     MKCoordinateRegion region = self.mapView.region;
@@ -301,7 +306,7 @@ float delta = 8.;
       CLLocationDistance dist = [newLocation distanceFromLocation:townLocation];
       
       if (dist < 10000.) {
-        [aroundMeTownArray addObject:town];
+        [aroundMeTownArray_ addObject:town];
       }
       
       [townLocation release];
@@ -311,8 +316,8 @@ float delta = 8.;
     //add the pins
     self.detailDescriptionLabel.text = @"";
     self.detailDescriptionLabel.hidden = true;
-    for (int i = 0; i < [aroundMeTownArray count]; i++) {
-      _detailTown = [aroundMeTownArray objectAtIndex:i];
+    for (int i = 0; i < [aroundMeTownArray_ count]; i++) {
+      _detailTown = [aroundMeTownArray_ objectAtIndex:i];
       
       CLLocationDegrees CLLat = _detailTown.latitude;    
       CLLocationDegrees CLLong = _detailTown.longitude;
@@ -331,19 +336,24 @@ float delta = 8.;
     [_activityIndicator removeFromSuperview];
     _activityIndicator = nil;
     
-    first = false;
+    first_ = false;
   }
 }
 
 #pragma mark - Split view
 
-- (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController {
+- (void)splitViewController:(UISplitViewController *)splitController 
+     willHideViewController:(UIViewController *)viewController 
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem 
+       forPopoverController:(UIPopoverController *)popoverController {
   barButtonItem.title = NSLocalizedString(@"Communes", @"Communes");
   [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
   self.masterPopoverController = popoverController;
 }
 
-- (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem {
+- (void)splitViewController:(UISplitViewController *)splitController 
+     willShowViewController:(UIViewController *)viewController 
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem {
   // Called when the view is shown again in the split view, invalidating the button and popover controller.
   [self.navigationItem setLeftBarButtonItem:nil animated:YES];
   self.masterPopoverController = nil;

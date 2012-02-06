@@ -10,14 +10,14 @@
 #import <MapKit/MapKit.h>
 
 @interface MapPoint : NSObject<MKAnnotation> {
-  NSString                *title; 
-  NSString                *subtitle; 
-  CLLocationCoordinate2D  coordinate; 
+  NSString                *title_; 
+  NSString                *subtitle_; 
+  CLLocationCoordinate2D  coordinate_; 
 }
 
 @property (nonatomic,readonly) CLLocationCoordinate2D   coordinate; 
 @property (nonatomic,copy) NSString                     *title; 
 
-- (id) initWithCoordinate:(CLLocationCoordinate2D) c title:(NSString *) t; 
+- (id)initWithCoordinate:(CLLocationCoordinate2D)c title:(NSString *)t; 
 
 @end

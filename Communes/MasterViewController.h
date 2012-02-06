@@ -11,22 +11,22 @@
 @class DetailViewController;
 
 @interface MasterViewController : UITableViewController {
-  NSMutableString         *response;
-  NSURLConnection         *connection;
-  NSMutableArray          *townArray;
-  NSMutableArray          *copyListOfTown;
-  IBOutlet UISearchBar    *searchBar;
-  BOOL                     searching;
-  BOOL                     letUserSelectRow;
-  long                     totalFileSize;
-  float                    receivedDataBytes;
+  NSMutableString       *response_;
+  NSURLConnection       *connection_;
+  NSMutableArray        *towns_;
+  NSMutableArray        *copyListOfTown_;
+  IBOutlet UISearchBar  *searchBar_;
+  BOOL                  searching_;
+  BOOL                  letUserSelectRow_;
+  long                  totalFileSize_;
+  float                 receivedDataBytes_;
 }
-
-- (void) searchTableView;
-- (IBAction) aroundMe_Clicked:(id)sender;
 
 @property (strong, nonatomic) DetailViewController      *detailViewController;
 @property (nonatomic,retain) UIBarButtonItem            *aroundMe;
 @property (nonatomic,retain) IBOutlet UIProgressView    *myProgressBar;
+
+- (void)searchTableView;
+- (IBAction)aroundMe_Clicked:(id)sender;
 
 @end

@@ -14,14 +14,13 @@
 #import "MapPoint.h"
 
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate> {
-  bool                isAround;
-  CLLocationManager   *clController;
-  NSMutableArray      *aroundMeTownArray;
-  bool                first;
+  bool                isAround_;
+  CLLocationManager   *clController_;
+  NSMutableArray      *aroundMeTownArray_;
+  bool                first_;
 }
 
 @property (strong, nonatomic) id detailItem;
-
 @property (strong, nonatomic) IBOutlet UILabel              *detailDescriptionLabel;
 @property (strong, nonatomic) Town                          *detailTown;
 @property (nonatomic,retain)  IBOutlet MKMapView            *mapView;
