@@ -11,6 +11,11 @@
 
 #import "MapPoint.h"
 
+#define kLatitudeCentreFrance 46.770204
+#define kLongitudeCentreFrance 2.431755
+#define kDeltaFrance 8.
+#define kDistanceAroundCitys 10000.
+
 @interface DetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 - (void)configureView;
@@ -28,10 +33,7 @@
 @synthesize townArray               = _townArray;
 @synthesize activityIndicator       = _activityIndicator;
 @synthesize myProgressBar           = _myProgressBar;
-
-float latitude = 46.770204;
-float longitude = 2.431755;
-float delta = 8.;
+@synthesize infosController         = _infosController;
 
 - (void)dealloc {
   [_detailItem release];
@@ -47,6 +49,7 @@ float delta = 8.;
   [_myProgressBar release];
   [clController_ release];
   [aroundMeTownArray_ release];
+    [_infosController release];
   [super dealloc];
 }
 
@@ -88,18 +91,18 @@ float delta = 8.;
   isAround_ = false;
   
   //set the map center on the France
-  CLLocationDegrees CLLat = (CLLocationDegrees)latitude;    
-  CLLocationDegrees CLLong = (CLLocationDegrees)longitude;
+  CLLocationDegrees CLLat = (CLLocationDegrees)kLatitudeCentreFrance;    
+  CLLocationDegrees CLLong = (CLLocationDegrees)kLongitudeCentreFrance;
   
   CLLocationCoordinate2D newCoord = { CLLat, CLLong };
   
   MKCoordinateRegion region = self.mapView.region;
   region.center = newCoord;
-  region.span.longitudeDelta = delta;
-  region.span.latitudeDelta = delta;
+  region.span.longitudeDelta = kDeltaFrance;
+  region.span.latitudeDelta = kDeltaFrance;
   if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-    region.span.longitudeDelta = delta+2;
-    region.span.latitudeDelta = delta+2;
+    region.span.longitudeDelta = kDeltaFrance+2;
+    region.span.latitudeDelta = kDeltaFrance+2;
   }
   [self.mapView setRegion:region animated:YES];
   
@@ -117,6 +120,7 @@ float delta = 8.;
   [super viewDidUnload];
   // Release any retained subviews of the main view.
   // e.g. self.myOutlet = nil;
+    _detailTown = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -155,15 +159,18 @@ float delta = 8.;
 }
 
 #pragma mark - Set the informations
-
+//Call to refresh the DetailView
+//when you change the selection on MasterView
 - (void)refresh {
   isAround_ = false;
   self.detailDescriptionLabel.text = @"";
   self.detailDescriptionLabel.hidden = true;
   self.title = [_detailTown name];
   
+  //remove the annotations for the previous choices
   [_mapView removeAnnotations:_mapView.annotations];
   
+  //set the center of the map
   CLLocationDegrees CLLat = (CLLocationDegrees)_detailTown.latitude;    
   CLLocationDegrees CLLong = (CLLocationDegrees)_detailTown.longitude;
   
@@ -175,19 +182,22 @@ float delta = 8.;
   region.span.latitudeDelta = fabs([_detailTown distance]);
   [self.mapView setRegion:region animated:YES]; 
   
-  
+  //add the current annotation
   MapPoint *townAnnotation = [[MapPoint alloc] initWithCoordinate:newCoord title:[_detailTown name]]; 
   [_mapView addAnnotation:townAnnotation];
   [_mapView selectAnnotation:townAnnotation animated:false];
   
   [townAnnotation release];
   
+  //dismiss the MasterView for the iPad
   if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
     [_masterPopoverController dismissPopoverAnimated:YES];
   }
 }
 
+//custom the annotations
 - (MKAnnotationView *) mapView: (MKMapView *) mapView_ viewForAnnotation: (id <MKAnnotation>) annotation_ {
+  //di nothing for the user annotation
   if(annotation_ == _mapView.userLocation) {
     return nil;
   }
@@ -203,39 +213,41 @@ float delta = 8.;
   UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
   pin.rightCalloutAccessoryView = rightButton;
   pin.animatesDrop = YES;
-  
+    
   return pin;
 }
 
-- (void)mapView:(MKMapView *)mapView 
- annotationView:(MKAnnotationView *)view
-calloutAccessoryControlTapped:(UIControl *)control {    
-	if(!isAround_) {
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {   
+    
+  if(!isAround_) {
     InfosViewController *infosController = [[InfosViewController alloc] init];
-		infosController.detailTown=_detailTown;
-		infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
-		[self presentModalViewController:infosController animated:YES];
-  } else {
+    infosController.detailTown=_detailTown;
+    infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
+    [self presentModalViewController:infosController animated:YES];
+  } 
+  else {
     Town *choosen = [[Town alloc] init];
     MapPoint *annotation = view.annotation;
-		//to know which annotation I choose
-		for (int i = 0 ; i < [aroundMeTownArray_ count] ; i++) {
-			Town *town = [aroundMeTownArray_ objectAtIndex:i];
+    //to know which annotation I choose
+    for (int i = 0 ; i < [aroundMeTownArray_ count] ; i++) {
+      Town *town = [aroundMeTownArray_ objectAtIndex:i];
       CLLocationDegrees CLLat = (CLLocationDegrees)[town latitude];    
       CLLocationDegrees CLLong = (CLLocationDegrees)[town longitude];
       
-			if (annotation.coordinate.latitude==CLLat && annotation.coordinate.longitude==CLLong) {
-				choosen=town;
+      if (annotation.coordinate.latitude==CLLat && annotation.coordinate.longitude==CLLong) {
+        choosen=town;
         break;
-			}
+      }
       
       [town release];
-		}
+    }
     
-    InfosViewController *infosController = [[InfosViewController alloc] init];
-		infosController.detailTown=choosen;
-		infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
-		[self presentModalViewController:infosController animated:YES];
+    //call the OnfisViewController with the good inforations
+    _infosController = [[InfosViewController alloc] init];
+    _infosController.detailTown=choosen;
+    _infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
+    [self presentModalViewController:_infosController animated:YES];
+      
     [choosen release];
     [annotation release];
   }
@@ -252,6 +264,7 @@ calloutAccessoryControlTapped:(UIControl *)control {
 }
 
 #pragma mark - Around Me
+//Call to have the citys around you
 - (IBAction) aroundMe_Clicked:(id)sender {
   isAround_ = true;
   first_ = true;
@@ -278,10 +291,9 @@ calloutAccessoryControlTapped:(UIControl *)control {
 	[clController_ startUpdatingLocation];
 }
 
-
-- (void)locationManager:(CLLocationManager *)manager 
-    didUpdateToLocation:(CLLocation *)newLocation 
-           fromLocation:(CLLocation *)oldLocation {    
+//have the user location
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation { 
+    
   [clController_ stopUpdatingLocation];
   
   if(first_) {
@@ -305,7 +317,7 @@ calloutAccessoryControlTapped:(UIControl *)control {
       
       CLLocationDistance dist = [newLocation distanceFromLocation:townLocation];
       
-      if (dist < 10000.) {
+      if (dist < kDistanceAroundCitys) {
         [aroundMeTownArray_ addObject:town];
       }
       

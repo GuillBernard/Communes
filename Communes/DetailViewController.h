@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 
+#import "InfosViewController.h"
 #import "Town.h"
 #import "MapPoint.h"
 
@@ -29,6 +30,7 @@
 @property (nonatomic,retain)  NSMutableArray                *townArray;
 @property (nonatomic, retain) UIActivityIndicatorView       *activityIndicator;
 @property (nonatomic,retain) IBOutlet UIProgressView        *myProgressBar;
+@property (nonatomic,retain) InfosViewController            *infosController;
 
 - (IBAction)aroundMe_Clicked:(id)sender;
 - (void)refresh;
