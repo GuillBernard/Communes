@@ -14,7 +14,8 @@
 #define kLatitudeCentreFrance 46.770204
 #define kLongitudeCentreFrance 2.431755
 #define kDeltaFrance 8.
-#define kDistanceAroundCitys 10000.
+#define kDistanceAroundCitys 12000.
+#define kDistanceAroundRegionDelta 18000.
 
 @interface DetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
@@ -49,7 +50,7 @@
   [_myProgressBar release];
   [clController_ release];
   [aroundMeTownArray_ release];
-    [_infosController release];
+  [_infosController release];
   [super dealloc];
 }
 
@@ -300,10 +301,7 @@
     first_ = false;
     
     _mapView.showsUserLocation = YES;
-    MKCoordinateRegion region = self.mapView.region;
-    region.center = newLocation.coordinate;
-    region.span.longitudeDelta = 0.163426;
-    region.span.latitudeDelta = 0.139721;
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, kDistanceAroundRegionDelta, kDistanceAroundRegionDelta);
     [self.mapView setRegion:region animated:YES];
     
     //search the locations around me
