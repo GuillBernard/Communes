@@ -54,9 +54,6 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-  if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
-  }
   
   if (!self.detailViewController) {
     self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
@@ -111,6 +108,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
+  if(!searching_) {
+    [self.tableView setContentOffset:CGPointMake(0,44)];
+  }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -198,6 +198,7 @@
   [self.tableView performSelectorOnMainThread:@selector(reloadData)
                                    withObject:nil
                                 waitUntilDone:NO];
+    
   array = nil;
   [array release];
 }
@@ -300,7 +301,7 @@
     if ([sortedTowns_ count] > 0) {
       return [sortedTowns_ count] -1;
     } else {
-      return 1;
+      return 0;
     }
   }
 }
@@ -322,12 +323,9 @@
   
   if(searching_ && [copyListOfTown_ count] != 0) {
     text = [[NSString alloc] initWithFormat:@"%@", [[copyListOfTown_ objectAtIndex:indexPath.row] name]];
-  } else {
-    if ([sortedTowns_ count] == 0) {
-      text = @"Chargement...";
-    } else if(sortedTowns_.count >=  indexPath.row+1) {
-      text = [[NSString alloc] initWithFormat:@"%@", [[sortedTowns_ objectAtIndex:indexPath.row+1] name]];
-    }
+  } 
+  else if(sortedTowns_.count >=  indexPath.row+1) {
+    text = [[NSString alloc] initWithFormat:@"%@", [[sortedTowns_ objectAtIndex:indexPath.row+1] name]];
   }
   
   // Configure the cell.
@@ -366,6 +364,7 @@
       self.detailViewController.townArray = sortedTowns_;
       [self.detailViewController refresh];
     }
+    [searchBar_ resignFirstResponder];
   }
 }
 

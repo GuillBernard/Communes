@@ -11,6 +11,7 @@
 #import <CoreLocation/CoreLocation.h>
 
 #import "InfosViewController.h"
+#import "MasterViewController.h"
 #import "Town.h"
 #import "MapPoint.h"
 
@@ -31,6 +32,7 @@
 @property (nonatomic, retain) UIActivityIndicatorView       *activityIndicator;
 @property (nonatomic,retain) IBOutlet UIProgressView        *myProgressBar;
 @property (nonatomic,retain) InfosViewController            *infosController;
+@property (nonatomic,retain) MasterViewController           *masterViewController;
 
 - (IBAction)aroundMe_Clicked:(id)sender;
 - (void)refresh;

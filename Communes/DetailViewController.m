@@ -15,7 +15,7 @@
 #define kLongitudeCentreFrance 2.431755
 #define kDeltaFrance 8.
 #define kDistanceAroundCitys 12000.
-#define kDistanceAroundRegionDelta 18000.
+#define kDistanceAroundRegionDelta 20000.
 
 @interface DetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
@@ -35,6 +35,7 @@
 @synthesize activityIndicator       = _activityIndicator;
 @synthesize myProgressBar           = _myProgressBar;
 @synthesize infosController         = _infosController;
+@synthesize masterViewController    = _masterViewController;
 
 - (void)dealloc {
   [_detailItem release];
@@ -51,6 +52,7 @@
   [clController_ release];
   [aroundMeTownArray_ release];
   [_infosController release];
+  [_masterViewController release];
   [super dealloc];
 }
 
@@ -115,6 +117,8 @@
   [_mapView setDelegate:self];
   
   _mapType.selectedSegmentIndex=0;
+  
+  _infosController = [[InfosViewController alloc] init];
 }
 
 - (void)viewDidUnload {
@@ -219,16 +223,14 @@
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {   
-    
+
+  Town *choosen = [[Town alloc] init];
+  MapPoint *annotation = view.annotation;
+  
   if(!isAround_) {
-    InfosViewController *infosController = [[InfosViewController alloc] init];
-    infosController.detailTown=_detailTown;
-    infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
-    [self presentModalViewController:infosController animated:YES];
+    _infosController.detailTown=_detailTown;
   } 
   else {
-    Town *choosen = [[Town alloc] init];
-    MapPoint *annotation = view.annotation;
     //to know which annotation I choose
     for (int i = 0 ; i < [aroundMeTownArray_ count] ; i++) {
       Town *town = [aroundMeTownArray_ objectAtIndex:i];
@@ -243,15 +245,20 @@
       [town release];
     }
     
-    //call the OnfisViewController with the good inforations
-    _infosController = [[InfosViewController alloc] init];
+    //call the infosViewController with the good inforations
+    
     _infosController.detailTown=choosen;
-    _infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
-    [self presentModalViewController:_infosController animated:YES];
-      
-    [choosen release];
-    [annotation release];
   }
+  
+  _infosController.modalPresentationStyle=UIModalPresentationFormSheet;
+  _infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
+  [self presentModalViewController:_infosController animated:YES];
+  
+  
+  choosen = nil;
+  annotation = nil;
+  [choosen release];
+  [annotation release];
 }
 
 - (IBAction)changeMapType:(id)sender { 
@@ -269,6 +276,23 @@
 - (IBAction) aroundMe_Clicked:(id)sender {
   isAround_ = true;
   first_ = true;
+  
+  //dismiss the master on ipad
+  if (self.masterPopoverController != nil) {
+    [self.masterPopoverController dismissPopoverAnimated:YES];
+  }
+  
+  //deselect the previous cell and come back to the top
+  if(_masterViewController != nil) {
+    [_masterViewController.tableView deselectRowAtIndexPath:[_masterViewController.tableView indexPathForSelectedRow] animated:false];
+    NSIndexPath *topIndexPath;
+    topIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [_masterViewController.tableView scrollToRowAtIndexPath:topIndexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    topIndexPath = nil;
+    [topIndexPath release];
+    
+    [_masterViewController.tableView setContentOffset:CGPointMake(0,44)];
+  }
   
   aroundMeTownArray_ = [[NSMutableArray alloc] init];
   [_mapView removeAnnotations:_mapView.annotations];

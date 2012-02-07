@@ -40,6 +40,7 @@
     UINavigationController *detailNavigationController = [[[UINavigationController alloc] initWithRootViewController:detailViewController] autorelease];
     
     [masterViewController setDetailViewController:detailViewController];
+    detailViewController.masterViewController = masterViewController;
     
     self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
     self.splitViewController.delegate = detailViewController;
