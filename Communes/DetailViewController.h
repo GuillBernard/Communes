@@ -27,7 +27,7 @@
 @property (nonatomic,retain)  IBOutlet MKMapView            *mapView;
 @property (nonatomic,retain)  IBOutlet UIBarButtonItem      *aroundMe;
 @property (nonatomic,retain)  IBOutlet UISegmentedControl   *mapType;
-@property (nonatomic,retain)  NSMutableArray                *townArray;
+@property (nonatomic,retain)  NSArray                       *townArray;
 @property (nonatomic, retain) UIActivityIndicatorView       *activityIndicator;
 @property (nonatomic,retain) IBOutlet UIProgressView        *myProgressBar;
 @property (nonatomic,retain) InfosViewController            *infosController;

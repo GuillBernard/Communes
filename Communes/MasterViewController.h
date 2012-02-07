@@ -14,6 +14,7 @@
   NSMutableString       *response_;
   NSURLConnection       *connection_;
   NSMutableArray        *towns_;
+  NSArray               *sortedTowns_;
   NSMutableArray        *copyListOfTown_;
   IBOutlet UISearchBar  *searchBar_;
   BOOL                  searching_;

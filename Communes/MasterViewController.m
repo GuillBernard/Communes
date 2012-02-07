@@ -37,6 +37,7 @@
   [_aroundMe release];
   [response_ release];
   [towns_ release];
+  [sortedTowns_ release];
   [copyListOfTown_ release];
   [searchBar_ release];
   [connection_ release];
@@ -73,6 +74,7 @@
   
   response_ = [[NSMutableString alloc] init];
   towns_ = [[NSMutableArray alloc] init];
+  sortedTowns_ = [[NSArray alloc] init];
   
   if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
     //the Geolocation button
@@ -185,13 +187,23 @@
     tempTownArray = nil;
     [tempTownArray release];
   }
-  
-  self.detailViewController.townArray = towns_;
+    
+  sortedTowns_ = [towns_ sortedArrayUsingComparator:^(id a, id b) {
+    NSString *first = [(Town*)a name];
+    NSString *second = [(Town*)b name];
+    return [first localizedCaseInsensitiveCompare:second];
+  }];
+    
+  self.detailViewController.townArray = sortedTowns_;
   [self.tableView performSelectorOnMainThread:@selector(reloadData)
                                    withObject:nil
                                 waitUntilDone:NO];
   array = nil;
   [array release];
+}
+
+- (NSComparisonResult)compare:(Town*)firstObject :(Town*)otherObject {
+    return [firstObject.name localizedCaseInsensitiveCompare:otherObject.name];
 }
 
 #pragma mark - Around Me
@@ -253,7 +265,7 @@
   NSString *searchText = searchBar_.text;
   NSMutableArray *searchArray = [[NSMutableArray alloc] init];
   
-  [searchArray addObjectsFromArray:towns_];
+  [searchArray addObjectsFromArray:sortedTowns_];
   
   for (Town *sTemp in searchArray) {
     NSRange titleResultsRange = [[sTemp name] rangeOfString:searchText options:NSCaseInsensitiveSearch];
@@ -285,8 +297,8 @@
   if (searching_) {
     return [copyListOfTown_ count];
   } else {
-    if ([towns_ count] > 0) {
-      return [towns_ count] -1;
+    if ([sortedTowns_ count] > 0) {
+      return [sortedTowns_ count] -1;
     } else {
       return 1;
     }
@@ -311,10 +323,10 @@
   if(searching_ && [copyListOfTown_ count] != 0) {
     text = [[NSString alloc] initWithFormat:@"%@", [[copyListOfTown_ objectAtIndex:indexPath.row] name]];
   } else {
-    if ([towns_ count] == 0) {
+    if ([sortedTowns_ count] == 0) {
       text = @"Chargement...";
-    } else if(towns_.count >=  indexPath.row+1) {
-      text = [[NSString alloc] initWithFormat:@"%@", [[towns_ objectAtIndex:indexPath.row+1] name]];
+    } else if(sortedTowns_.count >=  indexPath.row+1) {
+      text = [[NSString alloc] initWithFormat:@"%@", [[sortedTowns_ objectAtIndex:indexPath.row+1] name]];
     }
   }
   
@@ -331,13 +343,13 @@
       if (!self.detailViewController) {
         self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
       }
-      self.detailViewController.detailTown = [towns_ objectAtIndex:indexPath.row+1];
-      self.detailViewController.townArray = towns_;
+      self.detailViewController.detailTown = [sortedTowns_ objectAtIndex:indexPath.row+1];
+      self.detailViewController.townArray = sortedTowns_;
       [self.navigationController pushViewController:self.detailViewController animated:YES];
       [self.detailViewController refresh];
     } else {
-      self.detailViewController.detailTown = [towns_ objectAtIndex:indexPath.row+1];
-      self.detailViewController.townArray = towns_;
+      self.detailViewController.detailTown = [sortedTowns_ objectAtIndex:indexPath.row+1];
+      self.detailViewController.townArray = sortedTowns_;
       [self.detailViewController refresh];
     }
   } else {
@@ -346,12 +358,12 @@
         self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
       }
       self.detailViewController.detailTown = [copyListOfTown_ objectAtIndex:indexPath.row];
-      self.detailViewController.townArray = towns_;
+      self.detailViewController.townArray = sortedTowns_;
       [self.navigationController pushViewController:self.detailViewController animated:YES];
       [self.detailViewController refresh];
     } else {
       self.detailViewController.detailTown = [copyListOfTown_ objectAtIndex:indexPath.row];
-      self.detailViewController.townArray = towns_;
+      self.detailViewController.townArray = sortedTowns_;
       [self.detailViewController refresh];
     }
   }
