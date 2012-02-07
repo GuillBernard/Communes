@@ -4,14 +4,15 @@ Communes
 iOS academic project about referencing the French cities
 
 
-### functionalities
+### Functionalities
 
-This application is using the iOS MapKit, the TableView, the LocationManager and the URLConnection.
+	This application is using the iOS MapKit, the TableView, the LocationManager and
+	the URLConnection.
 
 
 ### iPad and iPhone
 
-It's an iOS application optimized for iPhone or iPad.
+	It's an iOS application optimized for iPhone or iPad.
 
 
 ### License
