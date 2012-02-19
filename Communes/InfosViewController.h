@@ -19,5 +19,6 @@
 @property (nonatomic,retain)  IBOutlet UILabel          *regionCodeLabel;
 
 - (IBAction)comeBack:(id)sender;
+- (void)refresh;
 
 @end

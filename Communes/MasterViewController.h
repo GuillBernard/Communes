@@ -14,20 +14,23 @@
   NSMutableString       *response_;
   NSURLConnection       *connection_;
   NSMutableArray        *towns_;
-  NSArray               *sortedTowns_;
   NSMutableArray        *copyListOfTown_;
   IBOutlet UISearchBar  *searchBar_;
   BOOL                  searching_;
   BOOL                  letUserSelectRow_;
   long                  totalFileSize_;
   float                 receivedDataBytes_;
+  NSString              *filePath_;
 }
 
-@property (strong, nonatomic) DetailViewController      *detailViewController;
-@property (nonatomic,retain) UIBarButtonItem            *aroundMe;
-@property (nonatomic,retain) IBOutlet UIProgressView    *myProgressBar;
+@property (strong, nonatomic) DetailViewController       *detailViewController;
+@property (nonatomic,retain)  UIBarButtonItem            *aroundMe;
+@property (nonatomic,retain)  IBOutlet UIProgressView    *myProgressBar;
+@property (nonatomic, retain) NSArray                    *sortedTowns;
 
 - (void)searchTableView;
 - (IBAction)aroundMe_Clicked:(id)sender;
+- (void)readInTheFile;
+- (void)launchConnection;
 
 @end

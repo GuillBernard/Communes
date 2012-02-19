@@ -57,7 +57,6 @@
 }
 
 #pragma mark - Managing the detail item
-
 - (void)setDetailItem:(id)newDetailItem {
   if (_detailItem != newDetailItem) {
     [_detailItem release]; 
@@ -129,11 +128,15 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
+  [super viewWillAppear:animated];  
+  if([_masterViewController.sortedTowns count]>0) {
+    _myProgressBar.hidden = true;
+    _detailDescriptionLabel.text = @"";
+    _detailDescriptionLabel.hidden = true;
+  }
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
 }
 
@@ -249,7 +252,7 @@
     
     _infosController.detailTown=choosen;
   }
-  
+  [_infosController refresh];
   _infosController.modalPresentationStyle=UIModalPresentationFormSheet;
   _infosController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
   [self presentModalViewController:_infosController animated:YES];

@@ -18,6 +18,7 @@
 @synthesize detailViewController = _detailViewController;
 @synthesize aroundMe             = _aroundMe;
 @synthesize myProgressBar        = _myProgressBar;
+@synthesize sortedTowns          = _sortedTowns;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,6 +29,18 @@
       self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
     }
   }
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); 
+  NSString *directory = [paths objectAtIndex:0]; 
+  NSString *fileName = @"town"; 
+  filePath_ = [directory stringByAppendingPathComponent:fileName]; 
+  
+  paths = nil;
+  [paths release];
+  directory = nil;
+  [directory release];
+  fileName = nil;
+  [fileName release];
+  
   return self;
 }
 
@@ -37,10 +50,11 @@
   [_aroundMe release];
   [response_ release];
   [towns_ release];
-  [sortedTowns_ release];
+  [_sortedTowns release];
   [copyListOfTown_ release];
   [searchBar_ release];
   [connection_ release];
+  [filePath_ release];
   [super dealloc];
 }
 
@@ -50,7 +64,6 @@
 }
 
 #pragma mark - View lifecycle
-
 - (void)viewDidLoad {
   [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
@@ -71,7 +84,7 @@
   
   response_ = [[NSMutableString alloc] init];
   towns_ = [[NSMutableArray alloc] init];
-  sortedTowns_ = [[NSArray alloc] init];
+  _sortedTowns = [[NSArray alloc] init];
   
   if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
     //the Geolocation button
@@ -80,20 +93,23 @@
     self.navigationItem.rightBarButtonItem = _aroundMe;
   }
   
-  //the connection
-  NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:kUrlCsv] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:86400.0];
-  connection_ = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-  
-  if (connection_) {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    self.detailViewController.detailDescriptionLabel.text = @"Chargement..";
-    [self.detailViewController refresh];
-    
-  } else {
-    NSLog(@"Error during the connection");
+  if([[NSFileManager defaultManager] fileExistsAtPath:filePath_]){
+    NSDictionary *dictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath_ error:nil];
+    NSDate *fileDate =[dictionary objectForKey:NSFileModificationDate];
+    NSDate *today =[NSDate date];
+    if (![[[today dateByAddingTimeInterval:-(60*60*24)] earlierDate:fileDate] isEqualToDate:fileDate]) {
+      [self readInTheFile];
+    }
+    else{
+      [self launchConnection];
+    }
+    //[dictionary release];
+    //[fileDate release];
+    //[today release];
   }
-  
-  [request release];
+  else {
+    [self launchConnection];
+  }
 }
 
 - (void)viewDidUnload {
@@ -122,6 +138,30 @@
 }
 
 #pragma mark - Asynchronous connection
+- (void)launchConnection {
+  _myProgressBar.progress = 0.;
+  _detailViewController.myProgressBar.progress = 0;
+  _myProgressBar.hidden = NO;
+  _detailViewController.myProgressBar.hidden = NO;
+  //the connection
+  NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:kUrlCsv] 
+                                           cachePolicy:NSURLRequestUseProtocolCachePolicy 
+                                       timeoutInterval:60.0];
+  connection_ = [[NSURLConnection alloc] initWithRequest:request 
+                                                delegate:self];
+  
+  if (connection_) {
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    self.detailViewController.detailDescriptionLabel.text = @"Chargement..";
+    [self.detailViewController refresh];
+    
+  } else {
+    NSLog(@"Error during the connection");
+  }
+  
+  [request release];
+}
+
 -(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)inResponse {
   totalFileSize_ = inResponse.expectedContentLength;
 }
@@ -151,60 +191,100 @@
   
   inConnection = nil;
   
-  NSArray *array = [response_ componentsSeparatedByString: @"\n"];
-  for (int i = 1; i < array.count; i++) {   
-    NSArray *tempTownArray = [[array objectAtIndex:i] componentsSeparatedByString: @";"];
-    if ([[tempTownArray objectAtIndex:0] isEqualToString:@""]) {
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); 
+  NSString *directory = [paths objectAtIndex:0]; 
+  NSString *fileName = @"town"; 
+  filePath_ = [directory stringByAppendingPathComponent:fileName]; 
+  
+  [response_ writeToFile:filePath_ 
+              atomically:YES
+                encoding:NSUTF8StringEncoding
+                   error:nil];
+  
+  [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+  self.detailViewController.detailDescriptionLabel.text = @"";
+  self.detailViewController.detailDescriptionLabel.hidden = true;
+  
+  inConnection = nil;
+  
+  [self readInTheFile];
+  paths = nil;
+  [paths release];
+  directory = nil;
+  [directory release];
+  fileName = nil;
+  [fileName release];
+}
+
+- (void)readInTheFile{
+  if([[NSFileManager defaultManager] fileExistsAtPath:filePath_]){
+    NSString* content = [NSString stringWithContentsOfFile:filePath_
+                                                  encoding:NSUTF8StringEncoding
+                                                     error:nil];
+    
+    NSArray *array = [content componentsSeparatedByString: @"\n"];
+    for (int i = 1; i < array.count; i++) {   
+      NSArray *tempTownArray = [[array objectAtIndex:i] componentsSeparatedByString: @";"];
+      if ([[tempTownArray objectAtIndex:0] isEqualToString:@""]) {
+        tempTownArray = nil;
+        [tempTownArray release];
+        continue;
+      }
+      
+      if (tempTownArray.count == 8 ) {
+        Town *town = [[Town alloc] init];
+        
+        town.name = [tempTownArray objectAtIndex:0];
+        town.nameUP = [tempTownArray objectAtIndex:1];
+        town.postalCode = [tempTownArray objectAtIndex:2];
+        town.inseeCode = [tempTownArray objectAtIndex:3];
+        town.regionCode = [tempTownArray objectAtIndex:4];
+        
+        town.latitude = [[[tempTownArray objectAtIndex:5] stringByReplacingOccurrencesOfString:@","
+                                                                                    withString:@"."] floatValue];
+        town.longitude = [[[tempTownArray objectAtIndex:6] stringByReplacingOccurrencesOfString:@","
+                                                                                     withString:@"."] floatValue];
+        town.distance = [[[tempTownArray objectAtIndex:7] stringByReplacingOccurrencesOfString:@","
+                                                                                    withString:@"."] floatValue];
+        
+        [towns_ addObject:town];
+        
+        town = nil;
+        [town release];
+      } else {
+        tempTownArray = nil;
+        [tempTownArray release];
+      }
+      
       tempTownArray = nil;
       [tempTownArray release];
-      continue;
     }
     
-    if (tempTownArray.count == 8 ) {
-      Town *town = [[Town alloc] init];
-      
-      town.name = [tempTownArray objectAtIndex:0];
-      town.nameUP = [tempTownArray objectAtIndex:1];
-      town.postalCode = [tempTownArray objectAtIndex:2];
-      town.inseeCode = [tempTownArray objectAtIndex:3];
-      town.regionCode = [tempTownArray objectAtIndex:4];
-      
-      town.latitude = [[[tempTownArray objectAtIndex:5] stringByReplacingOccurrencesOfString:@","
-                                                                                  withString:@"."] floatValue];
-      town.longitude = [[[tempTownArray objectAtIndex:6] stringByReplacingOccurrencesOfString:@","
-                                                                                   withString:@"."] floatValue];
-      town.distance = [[[tempTownArray objectAtIndex:7] stringByReplacingOccurrencesOfString:@","
-                                                                                  withString:@"."] floatValue];
-      
-      [towns_ addObject:town];
-      town = nil;
-      [town release];
-    } else {
-      tempTownArray = nil;
-      [tempTownArray release];
-    }
+    _sortedTowns = [towns_ sortedArrayUsingComparator:^(id a, id b) {
+      NSString *first = [(Town*)a name];
+      NSString *second = [(Town*)b name];
+      return [first localizedCaseInsensitiveCompare:second];
+    }];
     
-    tempTownArray = nil;
-    [tempTownArray release];
+    self.detailViewController.townArray = _sortedTowns;
+    [self.tableView performSelectorOnMainThread:@selector(reloadData)
+                                     withObject:nil
+                                  waitUntilDone:NO];
+    
+    array = nil;
+    [array release];
+    content = nil;
+    [content release];
+    _myProgressBar.hidden = YES;
+    _detailViewController.myProgressBar.hidden = YES;
   }
-    
-  sortedTowns_ = [towns_ sortedArrayUsingComparator:^(id a, id b) {
-    NSString *first = [(Town*)a name];
-    NSString *second = [(Town*)b name];
-    return [first localizedCaseInsensitiveCompare:second];
-  }];
-    
-  self.detailViewController.townArray = sortedTowns_;
-  [self.tableView performSelectorOnMainThread:@selector(reloadData)
-                                   withObject:nil
-                                waitUntilDone:NO];
-    
-  array = nil;
-  [array release];
+  else{
+    [self launchConnection];
+  }
 }
 
 - (NSComparisonResult)compare:(Town*)firstObject :(Town*)otherObject {
-    return [firstObject.name localizedCaseInsensitiveCompare:otherObject.name];
+  return [firstObject.name localizedCaseInsensitiveCompare:otherObject.name];
 }
 
 #pragma mark - Around Me
@@ -266,7 +346,7 @@
   NSString *searchText = searchBar_.text;
   NSMutableArray *searchArray = [[NSMutableArray alloc] init];
   
-  [searchArray addObjectsFromArray:sortedTowns_];
+  [searchArray addObjectsFromArray:_sortedTowns];
   
   for (Town *sTemp in searchArray) {
     NSRange titleResultsRange = [[sTemp name] rangeOfString:searchText options:NSCaseInsensitiveSearch];
@@ -298,8 +378,8 @@
   if (searching_) {
     return [copyListOfTown_ count];
   } else {
-    if ([sortedTowns_ count] > 0) {
-      return [sortedTowns_ count] -1;
+    if ([_sortedTowns count] > 0) {
+      return [_sortedTowns count];
     } else {
       return 0;
     }
@@ -324,8 +404,8 @@
   if(searching_ && [copyListOfTown_ count] != 0) {
     text = [[NSString alloc] initWithFormat:@"%@", [[copyListOfTown_ objectAtIndex:indexPath.row] name]];
   } 
-  else if(sortedTowns_.count >=  indexPath.row+1) {
-    text = [[NSString alloc] initWithFormat:@"%@", [[sortedTowns_ objectAtIndex:indexPath.row+1] name]];
+  else if(_sortedTowns.count >=  indexPath.row) {
+    text = [[NSString alloc] initWithFormat:@"%@", [[_sortedTowns objectAtIndex:indexPath.row] name]];
   }
   
   // Configure the cell.
@@ -341,13 +421,13 @@
       if (!self.detailViewController) {
         self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
       }
-      self.detailViewController.detailTown = [sortedTowns_ objectAtIndex:indexPath.row+1];
-      self.detailViewController.townArray = sortedTowns_;
+      self.detailViewController.detailTown = [_sortedTowns objectAtIndex:indexPath.row];
+      self.detailViewController.townArray = _sortedTowns;
       [self.navigationController pushViewController:self.detailViewController animated:YES];
       [self.detailViewController refresh];
     } else {
-      self.detailViewController.detailTown = [sortedTowns_ objectAtIndex:indexPath.row+1];
-      self.detailViewController.townArray = sortedTowns_;
+      self.detailViewController.detailTown = [_sortedTowns objectAtIndex:indexPath.row];
+      self.detailViewController.townArray = _sortedTowns;
       [self.detailViewController refresh];
     }
   } else {
@@ -356,12 +436,12 @@
         self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
       }
       self.detailViewController.detailTown = [copyListOfTown_ objectAtIndex:indexPath.row];
-      self.detailViewController.townArray = sortedTowns_;
+      self.detailViewController.townArray = _sortedTowns;
       [self.navigationController pushViewController:self.detailViewController animated:YES];
       [self.detailViewController refresh];
     } else {
       self.detailViewController.detailTown = [copyListOfTown_ objectAtIndex:indexPath.row];
-      self.detailViewController.townArray = sortedTowns_;
+      self.detailViewController.townArray = _sortedTowns;
       [self.detailViewController refresh];
     }
     [searchBar_ resignFirstResponder];

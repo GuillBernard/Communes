@@ -46,7 +46,11 @@
   [super viewDidLoad];
   // Do any additional setup after loading the view from its nib.
   
-	_myNavigationItem.title = _detailTown.name;
+  [self refresh];
+}
+
+-(void)refresh{
+  _myNavigationItem.title = _detailTown.name;
   _postalCodeLabel.text   = _detailTown.postalCode;
   _inseeCodeLabel.text    = _detailTown.inseeCode;
   _regionCodeLabel.text   = _detailTown.regionCode;
