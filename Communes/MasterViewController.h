@@ -21,6 +21,7 @@
   long                  totalFileSize_;
   float                 receivedDataBytes_;
   NSString              *filePath_;
+  BOOL                  firstTime_;
 }
 
 @property (strong, nonatomic) DetailViewController       *detailViewController;

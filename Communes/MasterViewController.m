@@ -11,7 +11,7 @@
 
 #import "Town.h"
 
-#define kUrlCsv @"http://opium.openium.fr/ios/tp4/ville-orig.csv"
+#define kUrlCsv @"http://guillbernard.fr/ios/ville-orig.csv"
 
 @implementation MasterViewController
 
@@ -75,6 +75,8 @@
   _myProgressBar.progress = 0.;
   _detailViewController.myProgressBar.progress = 0;
   
+  firstTime_ = true;
+  
   //the searchBar
   self.tableView.tableHeaderView = searchBar_;
   searchBar_.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -103,9 +105,12 @@
     else{
       [self launchConnection];
     }
-    //[dictionary release];
-    //[fileDate release];
-    //[today release];
+    dictionary = nil;
+    [dictionary release];
+    fileDate = nil;
+    [fileDate release];
+    today = nil;
+    [today release];
   }
   else {
     [self launchConnection];
@@ -120,13 +125,14 @@
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  if(!searching_ && firstTime_) {
+    [self.tableView setContentOffset:CGPointMake(0,44)];
+    firstTime_ = false;
+  }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
-  if(!searching_) {
-    [self.tableView setContentOffset:CGPointMake(0,44)];
-  }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
